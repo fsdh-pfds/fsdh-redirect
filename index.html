@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Redirecting…</title>
 
-    <!-- 1) Load Google Analytics -->
+    <!-- Load Google Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-87JM90X2QF"
@@ -15,38 +15,28 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-      // initial config to start the session
       gtag("config", "G-87JM90X2QF");
     </script>
 
-    <!-- 2) On load: decode, extract utm_*, fire GA with campaign fields, then redirect -->
+    <!-- On load: grab utm_*, fire GA, then redirect -->
     <script>
       window.addEventListener("load", () => {
         const params = new URLSearchParams(location.search);
-        const rawDest = params.get("url");
-        if (!rawDest) {
+        const dest = params.get("redirect-url");
+        if (!dest) {
           document.body.innerHTML =
-            '<p style="color:red">Error: missing “url” parameter.</p>';
+            '<p style="color:red">Error: missing “redirect-url” parameter.</p>';
           return;
         }
 
-        let destUrl;
-        try {
-          destUrl = new URL(rawDest);
-        } catch (e) {
-          document.body.innerHTML =
-            '<p style="color:red">Error: invalid destination URL.</p>';
-          return;
-        }
-
-        // pull out any utm_* tags from the encoded destination
+        // collect any utm_* fields
         const campaignFields = {};
         ["source", "medium", "campaign", "term", "content"].forEach((key) => {
-          const v = destUrl.searchParams.get("utm_" + key);
+          const v = params.get("utm_" + key);
           if (v) campaignFields["campaign_" + key] = v;
         });
 
-        // fire GA with campaign override + record this redirect URL
+        // fire GA with campaign override + record this page/view
         gtag(
           "config",
           "G-87JM90X2QF",
@@ -58,14 +48,9 @@
           )
         );
 
-        // strip utm_* so users land on a clean URL
-        ["source", "medium", "campaign", "term", "content"].forEach((key) => {
-          destUrl.searchParams.delete("utm_" + key);
-        });
-
-        // give GA ~100 ms then hand off to the real site
+        // brief pause to let GA send the hit
         setTimeout(() => {
-          window.location.replace(destUrl.toString());
+          window.location.replace(dest);
         }, 100);
       });
     </script>
