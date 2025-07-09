@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Redirecting…</title>
+    <title>Secure Redirect…</title>
 
-    <!-- Load Google Analytics -->
+    <!-- Google Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-87JM90X2QF"
@@ -18,25 +18,50 @@
       gtag("config", "G-87JM90X2QF");
     </script>
 
-    <!-- On load: grab utm_*, fire GA, then redirect -->
     <script>
-      window.addEventListener("load", () => {
+      window.addEventListener("load", async () => {
         const params = new URLSearchParams(location.search);
-        const dest = params.get("redirect-url");
-        if (!dest) {
-          document.body.innerHTML =
-            '<p style="color:red">Error: missing “redirect-url” parameter.</p>';
-          return;
+        const rawDest = params.get("redirect-url");
+        if (!rawDest) {
+          return (document.body.innerHTML =
+            '<p style="color:red">Error: missing “redirect-url” parameter.</p>');
         }
 
-        // collect any utm_* fields
+        // Decode into a URL object
+        let destUrl;
+        try {
+          destUrl = new URL(rawDest);
+        } catch {
+          return (document.body.innerHTML =
+            '<p style="color:red">Error: invalid destination URL.</p>');
+        }
+        const destHref = destUrl.href; // canonical, decoded URL string
+
+        // Fetch the list of allowed full URLs
+        let allowed;
+        try {
+          const resp = await fetch("allowed.json", { cache: "no-store" });
+          if (!resp.ok) throw new Error();
+          const data = await resp.json();
+          allowed = data.allowed_urls || [];
+        } catch {
+          return (document.body.innerHTML =
+            '<p style="color:red">Error: cannot load allowed.json.</p>');
+        }
+
+        // Reject if the exact URL isn’t on the list
+        if (!allowed.includes(destHref)) {
+          return (document.body.innerHTML = `<p style="color:red">Error: redirect to <strong>${destUrl.hostname}</strong> is not allowed.</p>`);
+        }
+
+        // Collect any top-level utm_* parameters
         const campaignFields = {};
         ["source", "medium", "campaign", "term", "content"].forEach((key) => {
           const v = params.get("utm_" + key);
           if (v) campaignFields["campaign_" + key] = v;
         });
 
-        // fire GA with campaign override + record this page/view
+        // Fire GA with campaign override + record this pageview
         gtag(
           "config",
           "G-87JM90X2QF",
@@ -48,9 +73,9 @@
           )
         );
 
-        // brief pause to let GA send the hit
+        // Short delay to let GA send the hit
         setTimeout(() => {
-          window.location.replace(dest);
+          window.location.replace(destHref);
         }, 100);
       });
     </script>
@@ -65,6 +90,6 @@
     </style>
   </head>
   <body>
-    <p>Hold on – redirecting you now…</p>
+    <p>Checking permissions… you’ll be redirected shortly.</p>
   </body>
 </html>
