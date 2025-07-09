@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting…</title>
+
+    <!-- 1) Load Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-87JM90X2QF"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      // initial config to start the session
+      gtag("config", "G-87JM90X2QF");
+    </script>
+
+    <!-- 2) On load: decode, extract utm_*, fire GA with campaign fields, then redirect -->
+    <script>
+      window.addEventListener("load", () => {
+        const params = new URLSearchParams(location.search);
+        const rawDest = params.get("url");
+        if (!rawDest) {
+          document.body.innerHTML =
+            '<p style="color:red">Error: missing “url” parameter.</p>';
+          return;
+        }
+
+        let destUrl;
+        try {
+          destUrl = new URL(rawDest);
+        } catch (e) {
+          document.body.innerHTML =
+            '<p style="color:red">Error: invalid destination URL.</p>';
+          return;
+        }
+
+        // pull out any utm_* tags from the encoded destination
+        const campaignFields = {};
+        ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+          const v = destUrl.searchParams.get("utm_" + key);
+          if (v) campaignFields["campaign_" + key] = v;
+        });
+
+        // fire GA with campaign override + record this redirect URL
+        gtag(
+          "config",
+          "G-87JM90X2QF",
+          Object.assign(
+            {
+              page_path: location.pathname + location.search,
+            },
+            campaignFields
+          )
+        );
+
+        // strip utm_* so users land on a clean URL
+        ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+          destUrl.searchParams.delete("utm_" + key);
+        });
+
+        // give GA ~100 ms then hand off to the real site
+        setTimeout(() => {
+          window.location.replace(destUrl.toString());
+        }, 100);
+      });
+    </script>
+
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        margin-top: 20vh;
+        color: #444;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Hold on – redirecting you now…</p>
+  </body>
+</html>
