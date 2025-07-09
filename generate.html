@@ -1,196 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Redirect Link Generator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <title>Redirect Link Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
-    <style>
-      /* --- Global --- */
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body {
-        font-family: 'Inter', sans-serif;
-        background: #f0f2f5;
-        color: #333;
-        line-height: 1.5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding: 1rem;
-      }
+  <style>
+    /* --- Global --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
 
-      /* --- Container --- */
-      .card {
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        max-width: 600px;
-        width: 100%;
-        padding: 2rem;
-      }
+    /* --- Container --- */
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      max-width: 600px;
+      width: 100%;
+      padding: 2rem;
+    }
 
-      h1 {
-        font-size: 1.75rem;
-        font-weight: 600;
-        text-align: center;
-        margin-bottom: 1.5rem;
-        color: #111;
-      }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
 
-      /* --- Form Styles --- */
-      form label {
-        display: block;
-        margin-bottom: .5rem;
-        font-weight: 500;
-        font-size: .95rem;
-        color: #555;
-      }
+    /* --- Note Box --- */
+    .note {
+      background: #e9ecef;
+      border-left: 4px solid #007bff;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 4px;
+      color: #555;
+      font-size: 0.95rem;
+    }
+    .note a {
+      color: #007bff;
+      text-decoration: underline;
+    }
 
-      form input[type="text"],
-      form input[type="url"] {
-        width: 100%;
-        padding: .75rem 1rem;
-        margin-bottom: 1.25rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1rem;
-        transition: border-color .2s;
-      }
-      form input:focus {
-        outline: none;
-        border-color: #007bff;
-      }
+    /* --- Form Styles --- */
+    form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #555;
+    }
 
-      button {
-        display: block;
-        width: 100%;
-        background: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: .75rem 1rem;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background .2s;
-      }
-      button:hover {
-        background: #0056b3;
-      }
+    form input[type="text"],
+    form input[type="url"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    form input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
 
-      /* --- Output Styles --- */
-      #output {
-        background: #e9ecef;
-        border-left: 4px solid #007bff;
-        padding: 1rem;
-        margin-top: 1.5rem;
-        border-radius: 4px;
-        word-break: break-all;
-      }
-      #output a {
-        color: #007bff;
-        text-decoration: underline;
-        font-weight: 500;
-      }
-      #output input {
-        width: 100%;
-        padding: .75rem 1rem;
-        margin-top: .75rem;
-        font-size: .95rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-      #copyMsg {
-        margin-top: .5rem;
-        font-size: .9rem;
-        color: #28a745;
-      }
-    </style>
-  </head>
+    button {
+      display: block;
+      width: 100%;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
 
-  <body>
-    <div class="card">
-      <h1>Redirect Link Generator</h1>
-      <form id="genForm">
-        <label for="dest">Destination URL</label>
-        <input
-          type="url"
-          id="dest"
-          required
-          placeholder="https://example.com/page"
-        />
+    /* --- Output Styles --- */
+    #output {
+      background: #e9ecef;
+      border-left: 4px solid #007bff;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+    #output a {
+      color: #007bff;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    #output input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.95rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #copyMsg {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #28a745;
+    }
+  </style>
+</head>
 
-        <label for="utm_source">UTM Source</label>
-        <input type="text" id="utm_source" placeholder="e.g. newsletter" />
-
-        <label for="utm_medium">UTM Medium</label>
-        <input type="text" id="utm_medium" placeholder="e.g. email" />
-
-        <label for="utm_campaign">UTM Campaign</label>
-        <input type="text" id="utm_campaign" placeholder="e.g. summer-promo" />
-
-        <label for="utm_term">UTM Term <small>(optional)</small></label>
-        <input type="text" id="utm_term" placeholder="e.g. keyphrase" />
-
-        <label for="utm_content">UTM Content <small>(optional)</small></label>
-        <input type="text" id="utm_content" placeholder="e.g. banner-ad" />
-
-        <button type="submit">Generate Link</button>
-      </form>
-
-      <div id="output" hidden>
-        <strong>Your redirect URL:</strong>
-        <p><a href="#" target="_blank" id="genLink"></a></p>
-        <input type="text" id="genInput" readonly />
-        <p id="copyMsg" hidden>Link copied to clipboard!</p>
-      </div>
+<body>
+  <div class="card">
+    <h1>Redirect Link Generator</h1>
+    <div class="note">
+      To approve a new destination URL, please submit a pull request against
+      <a href="https://github.com/fsdh-pfds/fsdh-redirect/blob/main/allowed.json" target="_blank">allowed.json</a>
+      in the <code>fsdh-redirect</code> repository.
     </div>
+    <form id="genForm">
+      <label for="dest">Destination URL</label>
+      <input type="url" id="dest" required placeholder="https://example.com/page" />
 
-    <script>
-      document.getElementById("genForm").addEventListener("submit", (e) => {
-        e.preventDefault();
+      <label for="utm_source">UTM Source</label>
+      <input type="text" id="utm_source" placeholder="e.g. newsletter" />
+
+      <label for="utm_medium">UTM Medium</label>
+      <input type="text" id="utm_medium" placeholder="e.g. email" />
+
+      <label for="utm_campaign">UTM Campaign</label>
+      <input type="text" id="utm_campaign" placeholder="e.g. summer-promo" />
+
+      <label for="utm_term">UTM Term <small>(optional)</small></label>
+      <input type="text" id="utm_term" placeholder="e.g. keyphrase" />
+
+      <label for="utm_content">UTM Content <small>(optional)</small></label>
+      <input type="text" id="utm_content" placeholder="e.g. banner-ad" />
+
+      <button type="submit">Generate Link</button>
+    </form>
+
+    <div id="output" hidden>
+      <strong>Your redirect URL:</strong>
+      <p><a href="#" target="_blank" id="genLink"></a></p>
+      <input type="text" id="genInput" readonly />
+      <p id="copyMsg" hidden>Link copied to clipboard!</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('genForm').addEventListener('submit', e => {
+      e.preventDefault();
 
         const origin = window.location.origin;
         const redirectPath = "/index.html";
 
-        // Build params
-        const dest = document.getElementById("dest").value.trim();
-        const params = new URLSearchParams();
-        ["source", "medium", "campaign", "term", "content"].forEach((key) => {
-          const val = document.getElementById("utm_" + key).value.trim();
-          if (val) params.append("utm_" + key, val);
-        });
-        params.append("redirect-url", encodeURIComponent(dest));
-
-        // Final URL
-        const finalUrl = `${origin}${redirectPath}?${params.toString()}`;
-
-        // Show & copy
-        const output = document.getElementById("output");
-        output.hidden = false;
-
-        const link = document.getElementById("genLink");
-        link.href = finalUrl;
-        link.textContent = finalUrl;
-
-        const input = document.getElementById("genInput");
-        input.value = finalUrl;
-        input.select();
-        document.execCommand("copy");
-
-        // Show copy message
-        const msg = document.getElementById("copyMsg");
-        msg.hidden = false;
-        setTimeout(() => {
-          msg.hidden = true;
-        }, 3000);
+      const dest     = document.getElementById('dest').value.trim();
+      const params   = new URLSearchParams();
+      ['source','medium','campaign','term','content'].forEach(key => {
+        const val = document.getElementById('utm_' + key).value.trim();
+        if (val) params.append('utm_' + key, val);
       });
-    </script>
-  </body>
+      params.append('redirect-url', encodeURIComponent(dest));
+
+      const finalUrl = `${origin}${redirectPath}?${params.toString()}`;
+
+      const output = document.getElementById('output');
+      output.hidden = false;
+
+      const link = document.getElementById('genLink');
+      link.href = finalUrl;
+      link.textContent = finalUrl;
+
+      const input = document.getElementById('genInput');
+      input.value = finalUrl;
+      input.select();
+      document.execCommand('copy');
+
+      const msg = document.getElementById('copyMsg');
+      msg.hidden = false;
+      setTimeout(() => { msg.hidden = true; }, 3000);
+    });
+  </script>
+</body>
 </html>
