@@ -26,16 +26,12 @@ A simple static-site toolchain to generate and serve tracked, secure redirects v
 
 ## 🚀 Quick Start
 
-1. **Clone** this repo:
-
-   ```bash
-   git clone https://github.com/fsdh‑pfds/fsdh‑redirect.git
-   ```
-2. **Edit** `allowed.json` to add your destination URL (see below).
-3. **Commit** and **open a Pull Request** against `main` to approve new URLs.
-4. On merge, GitHub Pages will auto‑deploy your updates.
-5. Use `generate.html` to build UTM‑tagged redirect links.
-6. Visitors clicking those links will hit `index.html`, fire a GA event, then be forwarded to the allowed URL.
+1. **Web Editor**: Navigate to this repository on GitHub and press the `.` key to open the cloud IDE.
+2. **Add URL**: In the web editor, open `allowed.json` and add your destination URL to the `allowed_urls` array.
+3. **Commit & PR**: Commit your changes (directly or via a branch) and open a Pull Request against `main` to approve new URLs.
+4. **Deploy**: Once merged, GitHub Pages will automatically deploy your updates.
+5. **Generate**: Open `generate.html` to build UTM-tagged redirect links.
+6. **Track & Redirect**: Visitors clicking those links will hit `index.html`, fire a GA event, then be forwarded to the allowed URL.
 
 ---
 
