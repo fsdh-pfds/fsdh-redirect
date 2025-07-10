@@ -1,4 +1,4 @@
-# FSDH Redirector Service
+# [FSDH Redirector Service](https://redirection.sds.alpha.canada.ca/generate.html)
 
 A simple static-site toolchain to generate and serve tracked, secure redirects via GitHub Pages.
 
